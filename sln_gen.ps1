@@ -5,8 +5,10 @@ if ($sln.Length -gt 0) {
     dotnet new classlib -n $($sln) -o src\library
     del .\src\library\Class1.cs
 
-    md .\src\WindowsService
-
+    $serviceName = -join($sln, ".WindowsService")
+    dotnet new worker -n $($serviceName) -o src\WindowsService
+    dotnet add src\WindowsService\$($serviceName).csproj reference src\library\$($sln).csproj
+    
     dotnet new xunit -o tests\integration
     dotnet add tests\integration\integration.csproj reference src\library\$($sln).csproj
     del .\tests\integration\UnitTest1.cs
